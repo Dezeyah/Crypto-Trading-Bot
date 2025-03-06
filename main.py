@@ -2,31 +2,29 @@ import ccxt
 import pandas as pd
 import time
 
-from config import API_KEY, API_SECRET # Load API Key
+from config import API_KEY, API_SECRET # Load API Keys
 
-# Intialising Binance API - Key needs to be added
+# Initialise Binance API
 exchange = ccxt.binance({
     'apiKey': API_KEY,
     'secret': API_SECRET,
     'options': {'defaultType': 'spot'}
 })
 
-exchange.set_sandbox_mode(True) # Use when testing with a TestNet API key
+exchange.set_sandbox_mode(True) # Use for testing - TestNet API
 
 tpair = 'BTC/USDT' # Trading pair
-tframe = '1m' # Timeframe for price data (1-minute candles)
+tframe = '1m' # Price data timeframe (1-minute candles)
 
-# Fetch OHCLV (Open-High-Low-Close-Volume) Data
 def fetch_data(tpair, tframe="1m", limit=100):
+    '''Fetch OHCLV (Open-High-Low-Close-Volume) Data'''
     candles = exchange.fetch_ohlcv(tpair, tframe, limit=limit)
     df = pd.DataFrame(candles, columns=['timestamp', 'open', 'high',
                                             'low', 'close', 'volume'])
     return df
 
-# Trading Strategy
 def trading_strategy(df):
     '''Generate BUY/SELL signal using SMA strategy'''
-
     df['SMA_5'] = df['close'].rolling(window=5).mean()
     df['SMA_20'] = df['close'].rolling(window=20).mean()
 
@@ -44,8 +42,8 @@ def trading_strategy(df):
     else:
         return 'HOLD'
 
-# Execute BUY/SELL Orders
 def place_order(signal, amount, tpair):
+    '''Place market order BUY/SELL based on signal'''
     if signal == 'BUY':
         order = exchange.create_order(tpair, 'market', 'buy', amount)
         print(f"BUY - Placed BUY order for {amount} {tpair}")
