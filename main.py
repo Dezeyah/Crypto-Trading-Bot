@@ -18,33 +18,33 @@ tframe = '1m' # Timeframe for price data (1-minute candles)
 # Fetch OHCLV (Open-High-Low-Close-Volume) Data
 def fetch_data(tpair, tframe="1m", limit=100):
     candles = exchange.fetch_ohlcv(tpair, tframe, limit=limit)
-    dframe = pd.DataFrame(candles, columns=['timestamp', 'open', 'high',
+    df = pd.DataFrame(candles, columns=['timestamp', 'open', 'high',
                                             'low', 'close', 'volume'])
-    return dframe
+    return df
 
 # Trading Strategy
-def trading_strategy(dframe):
+def trading_strategy(df):
     '''Generate BUY/SELL signal using SMA strategy'''
 
-    dframe['SMA_5'] = dframe['close'].rolling(window=5).mean()
-    dframe['SMA_20'] = dframe['close'].rolling(window=20).mean()
+    df['SMA_5'] = df['close'].rolling(window=5).mean()
+    df['SMA_20'] = df['close'].rolling(window=20).mean()
 
     # SMA_5 cross above SMA_20 - BUY Signal
-    if (dframe['SMA_5'].iloc[-1] > dframe['SMA_20'].iloc[-1] 
-        and dframe['SMA_5'].iloc[-2] <= dframe['SMA_20'].iloc[-2]):
+    if (df['SMA_5'].iloc[-1] > df['SMA_20'].iloc[-1] 
+        and df['SMA_5'].iloc[-2] <= df['SMA_20'].iloc[-2]):
         return 'BUY'
     
     # SMA_5 cross below SMA_20 - SELL Signal
-    elif (dframe['SMA_5'].iloc[-1] < dframe['SMA_20'].iloc[-1] 
-        and dframe['SMA_5'].iloc[-2] >= dframe['SMA_20'].iloc[-2]):
+    elif (df['SMA_5'].iloc[-1] < df['SMA_20'].iloc[-1] 
+        and df['SMA_5'].iloc[-2] >= df['SMA_20'].iloc[-2]):
         return 'SELL'
 
     # Neither - HOLD Signal
     else:
         return 'HOLD'
     
-dframe = fetch_data(tpair)
-tsignal = trading_strategy(dframe)
+df = fetch_data(tpair)
+tsignal = trading_strategy(df)
 
-print(dframe) # Checks data fetch is working
+print(df) # Checks data fetch is working
 print(tsignal) # Checks trading strategy is working
