@@ -61,6 +61,3 @@ while True:
     place_order(signal, 0.01, tpair)
 
     time.sleep(60)
-
-    #print(df) # Checks data fetch is working
-    #print(signal) # Checks trading strategy is working
