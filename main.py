@@ -1,5 +1,6 @@
 import ccxt
 import pandas as pd
+import time
 
 from config import API_KEY, API_SECRET # Load API Key
 
@@ -56,9 +57,12 @@ def place_order(signal, amount, tpair):
     else:
         print("HOLD - No Trade executed")
 
-df = fetch_data(tpair)
-signal = trading_strategy(df)
-place_order(signal, 0.01, tpair)
+while True:
+    df = fetch_data(tpair)
+    signal = trading_strategy(df)
+    place_order(signal, 0.01, tpair)
 
-print(df) # Checks data fetch is working
-print(signal) # Checks trading strategy is working
+    time.sleep(60)
+
+    #print(df) # Checks data fetch is working
+    #print(signal) # Checks trading strategy is working
