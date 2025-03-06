@@ -44,7 +44,7 @@ def trading_strategy(df):
         return 'HOLD'
     
 df = fetch_data(tpair)
-tsignal = trading_strategy(df)
+signal = trading_strategy(df)
 
 print(df) # Checks data fetch is working
-print(tsignal) # Checks trading strategy is working
+print(signal) # Checks trading strategy is working
