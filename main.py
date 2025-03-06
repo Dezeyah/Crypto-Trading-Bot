@@ -42,9 +42,23 @@ def trading_strategy(df):
     # Neither - HOLD Signal
     else:
         return 'HOLD'
-    
+
+# Execute BUY/SELL Orders
+def place_order(signal, amount, tpair):
+    if signal == 'BUY':
+        order = exchange.create_order(tpair, 'market', 'buy', amount)
+        print(f"BUY - Placed BUY order for {amount} {tpair}")
+        print(order)
+    elif signal == 'SELL':
+        order = exchange.create_order(tpair, 'market', 'buy', amount)
+        print(f"SELL - Placed SELL order for {amount} {tpair}")
+        print(order)
+    else:
+        print("HOLD - No Trade executed")
+
 df = fetch_data(tpair)
 signal = trading_strategy(df)
+place_order(signal, 0.01, tpair)
 
 print(df) # Checks data fetch is working
 print(signal) # Checks trading strategy is working
