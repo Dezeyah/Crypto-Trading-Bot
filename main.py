@@ -1,10 +1,12 @@
 import ccxt
 import pandas as pd
 
+from config import API_KEY, API_SECRET # Load API Key
+
 # Intialising Binance API - Key needs to be added
 exchange = ccxt.binance({
-    'apiKey': "YOUR_API_KEY",
-    'secret': "YOUR_API_SECRET",
+    'apiKey': API_KEY,
+    'secret': API_SECRET,
     'options': {'defaultType': 'spot'}
 })
 
