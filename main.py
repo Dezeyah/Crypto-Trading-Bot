@@ -13,12 +13,12 @@ exchange = ccxt.binance({
 
 exchange.set_sandbox_mode(True) # Use for testing - TestNet API
 
-tpair = 'BTC/USDT' # Trading pair
-tframe = '1m' # Price data timeframe (1-minute candles)
+symbol = 'BTC/USDT' # Trading pair
+timeframe = '1m' # Price data timeframe (1-minute candles)
 
-def fetch_data(tpair, tframe="1m", limit=100):
+def fetch_data(symbol, timeframe="1m", limit=100):
     '''Fetch OHCLV (Open-High-Low-Close-Volume) Data'''
-    candles = exchange.fetch_ohlcv(tpair, tframe, limit=limit)
+    candles = exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
     df = pd.DataFrame(candles, columns=['timestamp', 'open', 'high',
                                             'low', 'close', 'volume'])
     return df
@@ -42,22 +42,22 @@ def trading_strategy(df):
     else:
         return 'HOLD'
 
-def place_order(signal, amount, tpair):
+def place_order(signal, amount, symbol):
     '''Place market order BUY/SELL based on signal'''
     if signal == 'BUY':
-        order = exchange.create_order(tpair, 'market', 'buy', amount)
-        print(f"BUY - Placed BUY order for {amount} {tpair}")
+        order = exchange.create_order(symbol, 'market', 'buy', amount)
+        print(f"BUY - Placed BUY order for {amount} {symbol}")
         print(order)
     elif signal == 'SELL':
-        order = exchange.create_order(tpair, 'market', 'buy', amount)
-        print(f"SELL - Placed SELL order for {amount} {tpair}")
+        order = exchange.create_order(symbol, 'market', 'buy', amount)
+        print(f"SELL - Placed SELL order for {amount} {symbol}")
         print(order)
     else:
         print("HOLD - No Trade executed")
 
 while True:
-    df = fetch_data(tpair)
+    df = fetch_data(symbol)
     signal = trading_strategy(df)
-    place_order(signal, 0.01, tpair)
+    place_order(signal, 0.01, symbol)
 
     time.sleep(60)
