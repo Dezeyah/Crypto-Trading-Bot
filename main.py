@@ -22,5 +22,29 @@ def fetch_data(tpair, tframe="1m", limit=100):
                                             'low', 'close', 'volume'])
     return dframe
 
+# Trading Strategy
+def trading_strategy(dframe):
+    '''Generate BUY/SELL signal using SMA strategy'''
+
+    dframe['SMA_5'] = dframe['close'].rolling(window=5).mean()
+    dframe['SMA_20'] = dframe['close'].rolling(window=20).mean()
+
+    # SMA_5 cross above SMA_20 - BUY Signal
+    if (dframe['SMA_5'].iloc[-1] > dframe['SMA_20'].iloc[-1] 
+        and dframe['SMA_5'].iloc[-2] <= dframe['SMA_20'].iloc[-2]):
+        return 'BUY'
+    
+    # SMA_5 cross below SMA_20 - SELL Signal
+    elif (dframe['SMA_5'].iloc[-1] < dframe['SMA_20'].iloc[-1] 
+        and dframe['SMA_5'].iloc[-2] >= dframe['SMA_20'].iloc[-2]):
+        return 'SELL'
+
+    # Neither - HOLD Signal
+    else:
+        return 'HOLD'
+    
 dframe = fetch_data(tpair)
-print(dframe)
+tsignal = trading_strategy(dframe)
+
+print(dframe) # Checks data fetch is working
+print(tsignal) # Checks trading strategy is working
